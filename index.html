@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -413,41 +413,6 @@
     position: relative;
     margin-top: 20px;
   }
-  .index-card {
-    background: var(--card);
-    border: 1.5px solid var(--ink);
-    padding: 18px 18px 22px;
-    transform: rotate(3deg);
-    position: relative;
-    font-family: var(--font-mono);
-    box-shadow: 6px 6px 0 var(--rule-soft);
-  }
-  .index-card::before {
-    content: '';
-    position: absolute;
-    top: 12px; left: 12px;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--paper);
-    border: 1.5px solid var(--ink);
-  }
-  .index-card-label {
-    font-size: 10px;
-    color: var(--ink-faint);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 10px;
-    text-align: right;
-  }
-  .index-card-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12.5px;
-    padding: 7px 0;
-    border-bottom: 1px dashed var(--rule);
-  }
-  .index-card-row:last-child { border-bottom: none; }
-  .index-card-row b { color: var(--riso-red); }
   .hero-side .washi { top: -14px; right: 20px; transform: rotate(8deg); }
 
   /* ── SECTIONS ── */
@@ -537,6 +502,76 @@
     transform: rotate(1.5deg);
   }
   .stat-card:nth-child(2n) { transform: rotate(-1.5deg); }
+
+  .css-card {
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    padding: 16px 18px 14px;
+    transform: rotate(1.2deg);
+    box-shadow: 6px 6px 0 var(--rule-soft);
+  }
+  .css-label {
+    font-family: var(--font-display);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .css-preview {
+    background: var(--paper2);
+    border: 1.5px dashed var(--ink-faint);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    margin-bottom: 12px;
+  }
+  .css-box {
+    border: 2px solid var(--ink);
+    padding: 14px 20px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 18px;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+  .css-controls { display: flex; flex-direction: column; gap: 8px; }
+  .css-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .css-row span:first-child {
+    width: 38px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 10px;
+  }
+  .css-row input[type="color"] {
+    width: 28px; height: 22px;
+    border: 1.5px solid var(--ink);
+    padding: 1px;
+    cursor: pointer;
+    background: none;
+  }
+  .css-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--riso-red);
+    cursor: pointer;
+  }
+  .css-val {
+    width: 34px;
+    text-align: right;
+    font-size: 10px;
+    color: var(--ink-faint);
+  }
 
   .stat-number {
     font-family: var(--font-display);
@@ -1158,8 +1193,8 @@
   </ul>
   <div style="display:flex;align-items:center;">
     <div class="lang-toggle">
-      <button class="lang-btn active" id="btn-ru" onclick="setLang('ru')">RU</button>
-      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-ru" onclick="setLang('ru')">RU</button>
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
     </div>
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">Night</button>
     <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false" onclick="toggleMobileMenu()">
@@ -1200,13 +1235,36 @@
     </div>
     <div class="hero-side reveal">
       <div class="washi"></div>
-      <div class="index-card">
-        <div class="index-card-label">Card No. 001</div>
-        <div class="index-card-row"><span>Status</span><b data-i18n="hero.badge">Открыт к новым проектам</b></div>
-        <div class="index-card-row"><span data-i18n="stat.years">Лет опыта</span><b>4+</b></div>
-        <div class="index-card-row"><span data-i18n="stat.projects">Проектов</span><b>20+</b></div>
-        <div class="index-card-row"><span data-i18n="stat.clients">Клиентов</span><b>12+</b></div>
-        <div class="index-card-row"><span data-i18n="stat.coffee">Чашек кофе</span><b>∞</b></div>
+      <div class="css-card" id="css-card">
+        <div class="css-label" data-i18n="css.label">CSS Playground</div>
+        <div class="css-preview" id="css-preview">
+          <div class="css-box" id="css-box">Hello</div>
+        </div>
+        <div class="css-controls">
+          <label class="css-row">
+            <span>Color</span>
+            <input type="color" id="css-color" value="#211F1A">
+          </label>
+          <label class="css-row">
+            <span>Bg</span>
+            <input type="color" id="css-bg" value="#EDE6D3">
+          </label>
+          <label class="css-row">
+            <span>Radius</span>
+            <input type="range" id="css-radius" min="0" max="50" value="0">
+            <span class="css-val" id="css-radius-val">0px</span>
+          </label>
+          <label class="css-row">
+            <span>Size</span>
+            <input type="range" id="css-size" min="12" max="36" value="18">
+            <span class="css-val" id="css-size-val">18px</span>
+          </label>
+          <label class="css-row">
+            <span>Pad</span>
+            <input type="range" id="css-pad" min="4" max="40" value="14">
+            <span class="css-val" id="css-pad-val">14px</span>
+          </label>
+        </div>
       </div>
       <div class="stamp" style="position:absolute; bottom:-30px; left:-20px;">Open<br>2026</div>
     </div>
@@ -1230,22 +1288,6 @@
       <p data-i18n="about.p3">Когда не пишу код — читаю о технологиях, изучаю дизайн-системы и нахожу вдохновение в минималистичной архитектуре.</p>
     </div>
     <div class="stats-grid reveal">
-      <div class="stat-card">
-        <div class="stat-number">3+</div>
-        <div class="stat-label" data-i18n="stat.years">Лет опыта</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">20+</div>
-        <div class="stat-label" data-i18n="stat.projects">Проектов</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">12+</div>
-        <div class="stat-label" data-i18n="stat.clients">Клиентов</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">∞</div>
-        <div class="stat-label" data-i18n="stat.coffee">Чашек кофе</div>
-      </div>
       <div class="journey-block">
         <div class="section-eyebrow" style="margin-bottom:16px;" data-i18n="about.journey">Путь</div>
         <div class="timeline">
@@ -1659,10 +1701,7 @@ const translations = {
     "about.p1": "Занимаюсь разработкой <strong>веб-приложений</strong> и созданием пользовательских интерфейсов. Мне важен не только результат, но и процесс — каждая строка кода должна быть понятна и каждый пиксель на месте.",
     "about.p2": "Работаю на стыке <strong>дизайна и технологий</strong>: понимаю, как пользователь думает, и знаю, как это реализовать в коде. Это позволяет мне строить вещи быстро, не жертвуя качеством.",
     "about.p3": "Когда не пишу код — читаю о технологиях, изучаю дизайн-системы и нахожу вдохновение в минималистичной архитектуре.",
-    "stat.years": "Лет опыта",
-    "stat.projects": "Проектов",
-    "stat.clients": "Клиентов",
-    "stat.coffee": "Чашек кофе",
+    "css.label": "CSS Playground",
     "about.journey": "Путь",
     "present": "н.в.",
     "tl.t1": "Fullstack Developer",
@@ -1749,10 +1788,7 @@ const translations = {
     "about.p1": "I work on <strong>web application</strong> development and user interface design. What matters to me is not just the result, but the process — every line of code should be readable and every pixel in place.",
     "about.p2": "I operate at the intersection of <strong>design and technology</strong>: I understand how users think and know how to implement it in code. This lets me build things fast without sacrificing quality.",
     "about.p3": "When I'm not writing code, I'm reading about technology, studying design systems, and finding inspiration in minimalist architecture.",
-    "stat.years": "Years of exp.",
-    "stat.projects": "Projects",
-    "stat.clients": "Clients",
-    "stat.coffee": "Cups of coffee",
+    "css.label": "CSS Playground",
     "about.journey": "Journey",
     "present": "present",
     "tl.t1": "Fullstack Developer",
@@ -1824,7 +1860,7 @@ const translations = {
   }
 };
 
-let currentLang = 'ru';
+let currentLang = 'en';
 
 function setLang(lang) {
   currentLang = lang;
@@ -1849,6 +1885,7 @@ function setLang(lang) {
     if (statusEl) statusEl.textContent = translations[lang][window.__ghStatusKey];
   }
 }
+setLang('en');
 
 // ── SCROLL REVEAL ──
 const observer = new IntersectionObserver((entries) => {
@@ -2101,6 +2138,38 @@ function toggleTheme() {
 
   loadStats();
   loadCalendar();
+})();
+
+// ── CSS PLAYGROUND ──
+(function () {
+  const box = document.getElementById('css-box');
+  if (!box) return;
+  const els = {
+    color: document.getElementById('css-color'),
+    bg: document.getElementById('css-bg'),
+    radius: document.getElementById('css-radius'),
+    size: document.getElementById('css-size'),
+    pad: document.getElementById('css-pad'),
+  };
+  const vals = {
+    radius: document.getElementById('css-radius-val'),
+    size: document.getElementById('css-size-val'),
+    pad: document.getElementById('css-pad-val'),
+  };
+
+  function apply() {
+    box.style.color = els.color.value;
+    box.style.backgroundColor = els.bg.value;
+    box.style.borderRadius = els.radius.value + 'px';
+    box.style.fontSize = els.size.value + 'px';
+    box.style.padding = els.pad.value + 'px ' + (parseInt(els.pad.value) + 6) + 'px';
+    vals.radius.textContent = els.radius.value + 'px';
+    vals.size.textContent = els.size.value + 'px';
+    vals.pad.textContent = els.pad.value + 'px';
+  }
+
+  Object.values(els).forEach(el => el.addEventListener('input', apply));
+  apply();
 })();
 
 // ── BACK TO TOP ──
