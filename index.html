@@ -6,7 +6,10 @@
 <title>Shib — Portfolio Zine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Special+Elite&family=Caveat:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Special+Elite&family=Caveat:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/devicon/2.17.0/devicon.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/devicon/2.17.0/devicon.min.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -169,6 +172,81 @@
     padding: 2px 0;
   }
   .nav-links a:hover { color: var(--riso-red); }
+
+  /* ── HAMBURGER / MOBILE MENU ── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px; height: 40px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+    z-index: 210;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .hamburger span {
+    display: block;
+    width: 18px; height: 2px;
+    background: var(--ink);
+    transition: transform 0.25s, opacity 0.2s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    position: fixed;
+    top: 0; right: 0;
+    width: min(78vw, 320px);
+    height: 100vh;
+    background: var(--paper2);
+    border-left: 2px solid var(--ink);
+    z-index: 199;
+    padding: 110px 34px 40px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    box-shadow: -8px 0 0 var(--rule-soft);
+  }
+  .mobile-menu.open { transform: translateX(0); }
+
+  .mobile-menu::before {
+    content: 'MENU';
+    position: absolute;
+    top: 34px; left: 34px;
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--riso-red);
+  }
+
+  .mobile-menu ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .mobile-menu li { border-bottom: 1px dashed var(--rule); padding-bottom: 8px; }
+  .mobile-menu a {
+    display: block;
+    padding: 10px 2px;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: -0.3px;
+  }
+  .mobile-menu a:hover { color: var(--riso-red); }
+
+  .menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(33,31,26,0.4);
+    z-index: 198;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+  .menu-overlay.open { opacity: 1; visibility: visible; }
 
   .lang-toggle {
     display: flex;
@@ -515,15 +593,19 @@
   .skills-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px 40px;
+    gap: 34px 40px;
   }
 
   .skill-category {
     background: var(--card);
     border: 1.5px solid var(--ink);
-    padding: 22px 24px;
+    padding: 26px 22px 20px;
     position: relative;
+    transform: rotate(-0.7deg);
+    box-shadow: 6px 6px 0 var(--rule-soft);
   }
+  .skill-category:nth-child(2n) { transform: rotate(0.8deg); }
+  .skill-category[style*="grid-column"] { transform: rotate(-0.25deg); }
   .skill-category::before {
     content: attr(data-tab);
     position: absolute;
@@ -544,45 +626,77 @@
     color: var(--ink-soft);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin-bottom: 20px;
-    margin-top: 6px;
-  }
-
-  .skill-item { margin-bottom: 16px; }
-  .skill-item:last-child { margin-bottom: 0; }
-  .skill-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
     margin-bottom: 6px;
-    font-family: var(--font-mono);
+    margin-top: 6px;
+    text-align: center;
   }
-  .skill-name { font-size: 13.5px; color: var(--ink); }
-  .skill-pct { font-size: 12px; color: var(--riso-red); font-weight: 700; }
 
-  .skill-bar {
-    width: 100%;
-    height: 12px;
-    background-image: repeating-linear-gradient(90deg, var(--ink-faint) 0 1.5px, transparent 1.5px 8px);
-    background-position: left center;
-    border: 1.5px solid var(--rule);
-    position: relative;
+  .skill-pins {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 10px;
+    justify-content: center;
+    padding: 10px 4px 4px;
   }
-  .skill-fill {
-    height: 100%;
-    background: var(--riso-blue);
-    width: 0;
-    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+
+  .skill-pin {
     position: relative;
+    background: var(--paper2);
+    border: 1.5px dashed var(--ink-faint);
+    padding: 9px 14px 7px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--ink-soft);
+    box-shadow: 2px 3px 0 var(--rule-soft);
+    transition: transform 0.2s ease;
+    cursor: default;
   }
-  .skill-fill::after {
+  .skill-pin::before {
     content: '';
     position: absolute;
-    right: -2px; top: 50%;
-    transform: translateY(-50%);
-    width: 6px; height: 22px;
+    top: -5px; left: 50%;
+    transform: translateX(-50%);
+    width: 9px; height: 9px;
+    border-radius: 50%;
     background: var(--riso-red);
+    box-shadow: 0 1px 2px rgba(33,31,26,0.35);
   }
+  .skill-category.accent-red .skill-pin::before { background: var(--riso-blue); }
+
+  .skill-pin.core {
+    border-style: solid;
+    border-color: var(--riso-red);
+    background: var(--card);
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .skill-category.accent-red .skill-pin.core { border-color: var(--riso-blue); }
+  .skill-pin.core::after {
+    content: '★';
+    margin-left: 6px;
+    font-size: 9px;
+    color: var(--riso-red);
+    vertical-align: middle;
+  }
+  .skill-category.accent-red .skill-pin.core::after { color: var(--riso-blue); }
+
+  .skill-pins .skill-pin:nth-child(5n+1) { transform: rotate(-3deg); }
+  .skill-pins .skill-pin:nth-child(5n+2) { transform: rotate(2deg); }
+  .skill-pins .skill-pin:nth-child(5n+3) { transform: rotate(-1.5deg); }
+  .skill-pins .skill-pin:nth-child(5n+4) { transform: rotate(3deg); }
+  .skill-pins .skill-pin:nth-child(5n+5) { transform: rotate(-2deg); }
+  .skill-pin:hover { transform: rotate(0deg) translateY(-3px); }
+
+  .skills-note {
+    text-align: center;
+    font-family: var(--font-hand);
+    font-size: 17px;
+    color: var(--ink-faint);
+    margin-top: 30px;
+  }
+  .skills-note b { color: var(--riso-red); font-weight: 700; }
 
   /* ── GITHUB ACTIVITY ── */
   .gh-card {
@@ -762,6 +876,23 @@
     margin-top: 34px;
     transform: rotate(-0.6deg);
   }
+
+  .tech-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    padding: 3px 9px 3px 7px;
+    border: 1px solid var(--riso-blue);
+    color: var(--riso-blue);
+  }
+  .tech-tag i, .tech-tag svg { font-size: 13px; line-height: 1; }
+  .tech-tag svg { width: 13px; height: 13px; display: block; }
+  .tech-tag.tag-red { border-color: var(--riso-red); color: var(--riso-red); }
 
   /* ── PROJECTS ── */
   .projects-grid {
@@ -987,14 +1118,17 @@
   @media (max-width: 900px) {
     nav { padding: 14px 20px; }
     .nav-links { display: none; }
+    .hamburger { display: flex; }
     #hero { padding: 130px 24px 70px; }
     .hero-grid { grid-template-columns: 1fr; }
     section { padding: 60px 24px; }
     .about-grid, .contact-inner { grid-template-columns: 1fr; }
     .skills-grid { grid-template-columns: 1fr; }
     .projects-grid { grid-template-columns: 1fr; }
+    .cert-grid { grid-template-columns: 1fr; }
     .form-grid { grid-template-columns: 1fr; }
     .nav-logo::after { display: none; }
+    .gh-stats-row { grid-template-columns: repeat(2, 1fr); }
   }
 
   :focus-visible { outline: 2px solid var(--riso-red); outline-offset: 2px; }
@@ -1028,15 +1162,30 @@
       <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
     </div>
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">Night</button>
+    <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<div class="menu-overlay" id="menu-overlay" onclick="toggleMobileMenu(false)"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <ul>
+    <li><a href="#about" data-i18n="nav.about" onclick="toggleMobileMenu(false)">Обо мне</a></li>
+    <li><a href="#skills" data-i18n="nav.skills" onclick="toggleMobileMenu(false)">Навыки</a></li>
+    <li><a href="#projects" data-i18n="nav.projects" onclick="toggleMobileMenu(false)">Проекты</a></li>
+    <li><a href="#certificates" data-i18n="nav.certs" onclick="toggleMobileMenu(false)">Сертификаты</a></li>
+    <li><a href="#contact-section" data-i18n="nav.contact" onclick="toggleMobileMenu(false)">Контакт</a></li>
+  </ul>
+</div>
+
 
 <!-- HERO -->
 <section id="hero">
   <div class="hero-grid">
     <div>
       <div class="hero-badge reveal" data-i18n="hero.badge">Открыт к новым проектам</div>
-      <h1 class="hero-name reveal">Shib<span>yo</span></h1>
+      <h1 class="hero-name reveal">OLEG<span>SHIBAEV</span></h1>
       <div class="hero-title reveal"></div>
       <p class="hero-desc reveal" data-i18n="hero.desc">Создаю цифровые продукты с чистым кодом и вниманием к деталям. От идеи до запуска.</p>
       <div class="hero-actions reveal">
@@ -1054,7 +1203,7 @@
       <div class="index-card">
         <div class="index-card-label">Card No. 001</div>
         <div class="index-card-row"><span>Status</span><b data-i18n="hero.badge">Открыт к новым проектам</b></div>
-        <div class="index-card-row"><span data-i18n="stat.years">Лет опыта</span><b>3+</b></div>
+        <div class="index-card-row"><span data-i18n="stat.years">Лет опыта</span><b>4+</b></div>
         <div class="index-card-row"><span data-i18n="stat.projects">Проектов</span><b>20+</b></div>
         <div class="index-card-row"><span data-i18n="stat.clients">Клиентов</span><b>12+</b></div>
         <div class="index-card-row"><span data-i18n="stat.coffee">Чашек кофе</span><b>∞</b></div>
@@ -1133,92 +1282,49 @@
   <div class="skills-grid reveal">
     <div class="skill-category" data-tab="01">
       <h3 data-i18n="skills.cat1">Frontend</h3>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">React / Next.js</span><span class="skill-pct">90%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">TypeScript</span><span class="skill-pct">85%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">CSS / Tailwind</span><span class="skill-pct">92%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="92"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">Vue.js</span><span class="skill-pct">70%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
+      <div class="skill-pins">
+        <span class="skill-pin core">React / Next.js</span>
+        <span class="skill-pin core">TypeScript</span>
+        <span class="skill-pin core">CSS / Tailwind</span>
+        <span class="skill-pin">Vue.js</span>
       </div>
     </div>
-    <div class="skill-category" data-tab="02">
+    <div class="skill-category accent-red" data-tab="02">
       <h3 data-i18n="skills.cat2">Backend</h3>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">Node.js / Express</span><span class="skill-pct">80%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">Python / FastAPI</span><span class="skill-pct">72%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="72"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">PostgreSQL</span><span class="skill-pct">75%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">Docker / CI/CD</span><span class="skill-pct">65%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="65"></div></div>
+      <div class="skill-pins">
+        <span class="skill-pin">Node.js / Express</span>
+        <span class="skill-pin">Python / FastAPI</span>
+        <span class="skill-pin">PostgreSQL</span>
+        <span class="skill-pin">Docker / CI/CD</span>
       </div>
     </div>
     <div class="skill-category" data-tab="03">
       <h3 data-i18n="skills.cat5">Mobile</h3>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">React Native / Expo</span><span class="skill-pct">88%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="88"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">React Navigation</span><span class="skill-pct">85%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">AsyncStorage</span><span class="skill-pct">82%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="82"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">Expo SDK</span><span class="skill-pct">80%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+      <div class="skill-pins">
+        <span class="skill-pin core">React Native / Expo</span>
+        <span class="skill-pin core">React Navigation</span>
+        <span class="skill-pin">AsyncStorage</span>
+        <span class="skill-pin">Expo SDK</span>
       </div>
     </div>
-    <div class="skill-category" data-tab="04">
+    <div class="skill-category accent-red" data-tab="04">
       <h3 data-i18n="skills.cat3">Дизайн</h3>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">Figma</span><span class="skill-pct">88%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="88"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">UI/UX Design</span><span class="skill-pct">82%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="82"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">Motion Design</span><span class="skill-pct">60%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
+      <div class="skill-pins">
+        <span class="skill-pin core">Figma</span>
+        <span class="skill-pin">UI/UX Design</span>
+        <span class="skill-pin">Motion Design</span>
       </div>
     </div>
     <div class="skill-category" data-tab="05" style="grid-column:1/-1;">
       <h3 data-i18n="skills.cat4">Другое</h3>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">Git / GitHub</span><span class="skill-pct">90%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">REST / GraphQL</span><span class="skill-pct">78%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="78"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-header"><span class="skill-name">AI / LLM интеграции</span><span class="skill-pct">70%</span></div>
-        <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
+      <div class="skill-pins">
+        <span class="skill-pin core">Git / GitHub</span>
+        <span class="skill-pin">REST / GraphQL</span>
+        <span class="skill-pin">AI / LLM интеграции</span>
       </div>
     </div>
   </div>
+  <p class="skills-note" data-i18n="skills.note">★ — то, чем пользуюсь каждый день.</p>
 </section>
 
 <div class="divider-strip"></div>
@@ -1301,7 +1407,7 @@
         </svg>
       </div>
       <div class="project-body">
-        <div class="project-tags"><span class="tag">React Native</span><span class="tag">Expo</span><span class="tag">TypeScript</span></div>
+        <div class="project-tags"><span class="tech-tag"><i class="devicon-react-original"></i>React Native</span><span class="tech-tag tag-red"><svg viewBox="0 0 24 24"><path d="M4 20 L12 4 L20 20 L15 20 L12 13 L9 20 Z" fill="currentColor"/></svg>Expo</span><span class="tech-tag"><i class="devicon-typescript-plain"></i>TypeScript</span></div>
         <div class="project-title" data-i18n="p1.title">FitTracker</div>
         <div class="project-desc" data-i18n="p1.desc">Трекер тренировок с таймером отдыха, шкалой RPE, отслеживанием личных рекордов и шаблонами тренировок.</div>
         <span class="project-link" data-i18n="p1.link">GitHub →</span>
@@ -1332,7 +1438,7 @@
         </svg>
       </div>
       <div class="project-body">
-        <div class="project-tags"><span class="tag">React Native</span><span class="tag">Expo</span><span class="tag">TypeScript</span></div>
+        <div class="project-tags"><span class="tech-tag"><i class="devicon-react-original"></i>React Native</span><span class="tech-tag tag-red"><svg viewBox="0 0 24 24"><path d="M4 20 L12 4 L20 20 L15 20 L12 13 L9 20 Z" fill="currentColor"/></svg>Expo</span><span class="tech-tag"><i class="devicon-typescript-plain"></i>TypeScript</span></div>
         <div class="project-title" data-i18n="p2.title">SplitIt</div>
         <div class="project-desc" data-i18n="p2.desc">Приложение для разделения расходов между друзьями с балансами, группами и алгоритмом расчёта долгов.</div>
         <span class="project-link" data-i18n="p2.link">GitHub →</span>
@@ -1354,7 +1460,7 @@
         </svg>
       </div>
       <div class="project-body">
-        <div class="project-tags"><span class="tag">React Native</span><span class="tag">Expo</span><span class="tag">TypeScript</span></div>
+        <div class="project-tags"><span class="tech-tag"><i class="devicon-react-original"></i>React Native</span><span class="tech-tag tag-red"><svg viewBox="0 0 24 24"><path d="M4 20 L12 4 L20 20 L15 20 L12 13 L9 20 Z" fill="currentColor"/></svg>Expo</span><span class="tech-tag"><i class="devicon-typescript-plain"></i>TypeScript</span></div>
         <div class="project-title" data-i18n="p3.title">CookBook</div>
         <div class="project-desc" data-i18n="p3.desc">Кулинарная книга с 12 рецептами, поиском по ингредиентам, категориями и пошаговым приготовлением.</div>
         <span class="project-link" data-i18n="p3.link">GitHub →</span>
@@ -1379,7 +1485,7 @@
         </svg>
       </div>
       <div class="project-body">
-        <div class="project-tags"><span class="tag">React Native</span><span class="tag">Expo</span><span class="tag">RSS</span></div>
+        <div class="project-tags"><span class="tech-tag"><i class="devicon-react-original"></i>React Native</span><span class="tech-tag tag-red"><svg viewBox="0 0 24 24"><path d="M4 20 L12 4 L20 20 L15 20 L12 13 L9 20 Z" fill="currentColor"/></svg>Expo</span><span class="tech-tag tag-red"><svg viewBox="0 0 24 24"><circle cx="6.18" cy="17.82" r="2.18" fill="currentColor"/><path d="M4 4v3a13 13 0 0113 13h3A16 16 0 004 4z" fill="currentColor"/><path d="M4 10v3a7 7 0 017 7h3a10 10 0 00-10-10z" fill="currentColor"/></svg>RSS</span></div>
         <div class="project-title" data-i18n="p4.title">NewsApp</div>
         <div class="project-desc" data-i18n="p4.desc">Новостное приложение с реальными RSS-лентами Lenta, RBC, Habr, RIA, Championat и N+1.</div>
         <span class="project-link" data-i18n="p4.link">GitHub →</span>
@@ -1406,7 +1512,7 @@
         </svg>
       </div>
       <div class="project-body">
-        <div class="project-tags"><span class="tag">React Native</span><span class="tag">Expo</span><span class="tag">TypeScript</span></div>
+        <div class="project-tags"><span class="tech-tag"><i class="devicon-react-original"></i>React Native</span><span class="tech-tag tag-red"><svg viewBox="0 0 24 24"><path d="M4 20 L12 4 L20 20 L15 20 L12 13 L9 20 Z" fill="currentColor"/></svg>Expo</span><span class="tech-tag"><i class="devicon-typescript-plain"></i>TypeScript</span></div>
         <div class="project-title" data-i18n="p5.title">Toolbox</div>
         <div class="project-desc" data-i18n="p5.desc">6 утилит в одном приложении: генератор паролей, таймер, калькулятор, конвертер, BMI и палитра цветов.</div>
         <span class="project-link" data-i18n="p5.link">GitHub →</span>
@@ -1419,7 +1525,7 @@
 <div class="divider-strip"></div>
 
 <!-- CERTIFICATES -->
-<section id="certificates">
+<!-- <section id="certificates">
   <div class="reveal">
     <p class="section-eyebrow" data-i18n="cert.eyebrow">Сертификаты</p>
     <h2 class="section-title" data-i18n="cert.title">Подтверждённые навыки</h2>
@@ -1469,7 +1575,7 @@
 
   </div>
   <p class="cert-note" data-i18n="cert.note">* Демо-карточки — пришли свои сертификаты, и я вставлю реальные ссылки и даты.</p>
-</section>
+</section> -->
 
 <div class="divider-strip"></div>
 
@@ -1540,6 +1646,7 @@ const translations = {
     "nav.about": "Обо мне",
     "nav.skills": "Навыки",
     "nav.projects": "Проекты",
+    "nav.certs": "Сертификаты",
     "nav.contact": "Контакт",
     "hero.badge": "Открыт к новым проектам",
     "hero.title": "Разработчик · Дизайнер · Создатель",
@@ -1629,6 +1736,7 @@ const translations = {
     "nav.about": "About",
     "nav.skills": "Skills",
     "nav.projects": "Projects",
+    "nav.certs": "Certificates",
     "nav.contact": "Contact",
     "hero.badge": "Open to new projects",
     "hero.title": "Developer · Designer · Creator",
@@ -1753,13 +1861,19 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ── SKILL BARS ──
+// ── SKILL GAUGES ──
 const skillObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      entry.target.querySelectorAll('.skill-fill').forEach(bar => {
-        const w = bar.getAttribute('data-width');
-        setTimeout(() => { bar.style.width = w + '%'; }, 200);
+      entry.target.querySelectorAll('.skill-gauge').forEach((gauge, i) => {
+        const pct = parseFloat(gauge.getAttribute('data-pct')) || 0;
+        const fill = gauge.querySelector('.gauge-fill');
+        const needle = gauge.querySelector('.gauge-needle');
+        const angle = (pct / 100) * 180 - 90;
+        setTimeout(() => {
+          if (fill) fill.style.strokeDashoffset = String(100 - pct);
+          if (needle) needle.style.transform = `rotate(${angle}deg)`;
+        }, 150 + i * 70);
       });
       skillObserver.unobserve(entry.target);
     }
@@ -1811,6 +1925,25 @@ async function sendMessage() {
   btn.innerHTML = t['form.submit'];
   btn.disabled = false;
 }
+
+// ── MOBILE MENU ──
+function toggleMobileMenu(force) {
+  const menu = document.getElementById('mobile-menu');
+  const overlay = document.getElementById('menu-overlay');
+  const btn = document.getElementById('hamburger');
+  const open = typeof force === 'boolean' ? force : !menu.classList.contains('open');
+  menu.classList.toggle('open', open);
+  overlay.classList.toggle('open', open);
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', String(open));
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') toggleMobileMenu(false);
+});
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 900) toggleMobileMenu(false);
+});
 
 // ── NAV ACTIVE ──
 window.addEventListener('scroll', () => {
@@ -1977,4 +2110,4 @@ window.addEventListener('scroll', () => {
 </script>
   <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" id="back-to-top">↑</button>
 </body>
-</html>ы
+</html>
