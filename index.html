@@ -1629,17 +1629,11 @@
       <h2 class="section-title" data-i18n="contact.title">Давайте поработаем вместе</h2>
       <p class="section-subtitle" data-i18n="contact.subtitle">Есть идея или проект? Напишите — отвечаю в течение 24 часов.</p>
       <div class="contact-info-item">
-        <div class="contact-icon">@</div>
         <div>
-          <div class="contact-info-label" data-i18n="contact.email.label">Email</div>
-          <div class="contact-info-value">olegshibaevsup@gmail.com</div>
         </div>
       </div>
       <div class="contact-info-item">
-        <div class="contact-icon">◉</div>
         <div>
-          <div class="contact-info-label" data-i18n="contact.location.label">Локация</div>
-          <div class="contact-info-value" data-i18n="contact.location.value">Россия · Удалённо</div>
         </div>
       </div>
     </div>
@@ -1853,7 +1847,6 @@ const translations = {
     "form.submit": "Send message →",
     "form.sending": "Sending...",
     "form.success": "✓ Message sent! I'll reply shortly.",
-    "form.error": "Send error. Please write directly to olegshibaevsup@gmail.com",
     "form.fill": "Please fill in all fields.",
     "footer.rights": "All rights reserved.",
     "footer.top": "Back to top ↑"
@@ -1941,7 +1934,7 @@ async function sendMessage() {
   status.className = 'form-status';
 
   try {
-    const res = await fetch('https://formsubmit.co/ajax/olegshibaevsup@gmail.com', {
+    const res = await fetch('https://formsubmit.co/ajax/f3682921e8be1fae0d179026544ce288', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ name, email, subject, message })
